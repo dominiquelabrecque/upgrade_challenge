@@ -1,0 +1,239 @@
+{
+	"info": {
+		"_postman_id": "d152645c-c8b0-44d2-8071-9f4c4c46a22f",
+		"name": "upgrade_api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Valid login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1821df93-8a60-44d0-905c-c3441f948176",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"const responseSchema = JSON.parse(pm.environment.get(\"schema\"));",
+							"const response = pm.response.json();",
+							"",
+							"pm.test(\"response is valid\", function() {",
+							"    pm.expect(tv4.validateMultiple(response, responseSchema)).to.have.property('valid', true);",
+							"});",
+							"",
+							"const loansInReview = response.loansInReview;",
+							"",
+							"pm.test(\"loansInReview to have a valid id\", function () {",
+							"    loansInReview.forEach(function (loan) {",
+							"        pm.expect(loan.id).to.match(/\\d{7}/);",
+							"    });",
+							"});",
+							"",
+							"pm.test(\"loansInReview to have a valid uuid\", function () {",
+							"    loansInReview.forEach(function (loan) {",
+							"        pm.expect(loan.uuid).to.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/);",
+							"    });",
+							"});",
+							"",
+							"pm.test(\"loansInReview.productType === PERSONAL_LOAN\", function () {",
+							"    loansInReview.forEach(function (loan) {",
+							"        pm.expect(loan.productType).to.eql(\"PERSONAL_LOAN\");",
+							"    });",
+							"});",
+							"",
+							"pm.test(\"loansInReview.createDate to be a valid date\", function () {",
+							"    loansInReview.forEach(function(loan) {",
+							"        pm.expect(Date.parse(loan.createDate)).to.not.eql(NaN);",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-cf-source-id",
+						"value": "coding-challenge ",
+						"type": "text"
+					},
+					{
+						"key": "x-cf-corr-id",
+						"value": "{{$randomUUID}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"coding.challenge.login@upgrade.com\",\n    \"password\": \"On$3XcgsW#9q\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Invalid username",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c2f00205-f696-4211-b7cc-974214c84992",
+						"exec": [
+							"pm.test(\"Status code is 401\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-cf-source-id",
+						"value": "coding-challenge ",
+						"type": "text"
+					},
+					{
+						"key": "x-cf-corr-id",
+						"value": "{{$randomUUID}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"invalid@upgrade.com\",\n    \"password\": \"On$3XcgsW#9q\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Invalid password",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c2f00205-f696-4211-b7cc-974214c84992",
+						"exec": [
+							"pm.test(\"Status code is 401\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-cf-source-id",
+						"value": "coding-challenge ",
+						"type": "text"
+					},
+					{
+						"key": "x-cf-corr-id",
+						"value": "{{$randomUUID}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"coding.challenge.login@upgrade.com\",\n    \"password\": \"invalid\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "601cf326-d985-4641-913a-b1479c745d84",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "812aa730-b0b7-4b8c-96a8-cbff005d3e51",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
